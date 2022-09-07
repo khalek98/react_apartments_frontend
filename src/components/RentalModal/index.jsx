@@ -26,7 +26,7 @@ const RentalModal = ({ show, setShow }) => {
       location: formLocation,
     };
 
-    axios.post('http://localhost:4000/aparts', formData);
+    axios.post(`${process.env.REACT_APP_API_URL}/aparts`, formData);
     dispatch(addNewApart(formData));
 
     setFormTitle('');
