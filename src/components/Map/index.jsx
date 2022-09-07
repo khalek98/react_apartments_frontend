@@ -30,7 +30,6 @@ const Map = () => {
 
   const dispatch = useDispatch();
   const { items: aparts, activePoint } = useSelector((state) => state.apart);
-  
 
   const mapRef = useRef(null);
   const [zoom, setZoom] = useState(12);
