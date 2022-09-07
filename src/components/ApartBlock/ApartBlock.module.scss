@@ -1,0 +1,34 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 15px 15px 0 0;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+}
+
+.title {
+  font-size: 20px;
+}
+
+.bottom_wrap {
+  padding: 15px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 7px !important;
+}
+
+.descr {
+  font-size: 15px;
+  margin-top: 7px !important;
+}

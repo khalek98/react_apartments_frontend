@@ -1,43 +1,190 @@
 {
-    "aparts" : [
-        {
-            "id": "1",
-            "title": "Title Appart #1",
-            "description": "Some description #1",
-            "price": 8000,
-            "imgArr": [
-                "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/685/85/5/1739352389350685.jpg"
-            ],
-            "location": {
-                "longitude": "30.544185",
-                "latitude": "50.432817"
-            }
-        },
-        {
-            "id": "2",
-            "title": "Title Appart #2",
-            "description": "Some description #2",
-            "price": 10000,
-            "imgArr": [
-                "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/201/1/1/1739352389315201.jpg"
-            ],
-            "location": {
-                "longitude": "30.552530",
-                "latitude": "50.432339"
-            }
-        },
-        {
-            "id": "3",
-            "title": "Title Appart #3",
-            "description": "Some description #3",
-            "price": 12000,
-            "imgArr": [
-                "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/969/69/9/1739352389379969.jpg"
-            ],
-            "location": {
-                "longitude": "30.553937",
-                "latitude": "50.421044"
-            }
-        }
-    ]
+  "aparts": [
+    {
+      "id": "1",
+      "title": "Title Appart #1",
+      "description": "Some description #1",
+      "price": 8000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/685/85/5/1739352389350685.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/326/26/6/1742858741108326.JPG",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/206/6/6/1742858676753206.JPG",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/246/46/6/1742858676765246.JPG"
+      ],
+      "location": {
+        "longitude": "30.544185",
+        "latitude": "50.432817"
+      }
+    },
+    {
+      "id": "2",
+      "title": "Title Appart #2",
+      "description": "Some description #2",
+      "price": 10000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/201/1/1/1739352389315201.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/616/16/6/1742858676774616.JPG",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/716/16/6/1742858676781716.JPG"
+      ],
+      "location": {
+        "longitude": "30.552530",
+        "latitude": "50.432339"
+      }
+    },
+    {
+      "id": "3",
+      "title": "Title Appart #3",
+      "description": "Some description #3",
+      "price": 12000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/969/69/9/1739352389379969.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/883/83/3/1742053945357883.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/230/30/0/1742053842619230.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/415/15/5/1742053945255415.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/537/37/7/1742053945249537.jpg"
+      ],
+      "location": {
+        "longitude": "30.563937",
+        "latitude": "50.421044"
+      }
+    },
+    {
+      "id": "4",
+      "title": "Title Appart #4",
+      "description": "Some description #4",
+      "price": 10000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/222/22/2/1738316488178222.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/1/1/1/1738316488165001.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/957/57/7/1738316488175957.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/971/71/1/1738316488166971.jpg"
+      ],
+      "location": {
+        "longitude": "30.572530",
+        "latitude": "50.422339"
+      }
+    },
+    {
+      "id": "5",
+      "title": "Title Appart #5",
+      "description": "Some description #5",
+      "price": 10000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/519/19/9/1742674237701519.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/635/35/5/1742674391280635.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/635/35/5/1742674391280635.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/923/23/3/1742674392571923.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/721/21/1/1742674392572721.jpg"
+      ],
+      "location": {
+        "longitude": "30.606366",
+        "latitude": "50.521827"
+      }
+    },
+    {
+      "id": "6",
+      "title": "Title Appart #6",
+      "description": "Some description #6",
+      "price": 10000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/923/23/3/1742674392571923.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/307/7/7/1742053945367307.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/416/16/6/1742054369337416.jpg",
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/563/63/3/1742054131828563.jpg"
+      ],
+      "location": {
+        "longitude": "30.591547",
+        "latitude": "50.508851"
+      }
+    },
+    {
+      "id": "iVZW-PPiDJYbEDqis5J44",
+      "title": "Титул №7",
+      "description": "Описание №7",
+      "price": "12000",
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/883/83/3/1742053945357883.jpg"
+      ],
+      "location": {
+        "latitude": 50.4332336,
+        "longitude": 30.6272024
+      }
+    },
+    {
+      "id": "QebqgXDPLRuf5UeImKy7s",
+      "title": "Title #8",
+      "description": "Descr #8",
+      "price": 250000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/230/30/0/1742053842619230.jpg"
+      ],
+      "location": {
+        "latitude": "50.3983683",
+        "longitude": "30.5413294"
+      }
+    },
+    {
+      "id": "4XD6Su7hkiWcDiK8BqMFC",
+      "title": "Title #9",
+      "description": "Descr #9",
+      "price": 250000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/307/7/7/1742053945367307.jpg"
+      ],
+      "location": {
+        "latitude": "50.4295865",
+        "longitude": "30.6634792"
+      }
+    },
+    {
+      "id": "7wbH2KpnbhjC61FJ1edyC",
+      "title": "Здаю в аренду 2к квартиру",
+      "description": "опис ",
+      "price": 15000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/342/42/2/1736879177136342.jpg"
+      ],
+      "location": {
+        "latitude": "50.44027639999999",
+        "longitude": "30.5013722"
+      }
+    },
+    {
+      "id": "yEhX4W88to7UMRtPK6y4O",
+      "title": "Пример № 15",
+      "description": "Описание №15",
+      "price": 150000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/295/95/5/1741059038606295.jpg"
+      ],
+      "location": {
+        "latitude": "50.4316986",
+        "longitude": "30.6136396"
+      }
+    },
+    {
+      "id": "F9vVWtQmXdqHtHR70eTby",
+      "title": "Милославская 2в",
+      "description": "Милославская 2в",
+      "price": 120000,
+      "imgArr": [
+        "https://img.lunstatic.net/rieltor-offer-1600x1200/offers/875/75/5/1741058085390875.jpg"
+      ],
+      "location": {
+        "latitude": "50.5340678",
+        "longitude": "30.606306"
+      }
+    },
+    {
+      "id": "BV64Aavy9xNRImWdH9KSR",
+      "title": "",
+      "description": "",
+      "price": 0,
+      "imgArr": [],
+      "location": {
+        "latitude": "51.5072178",
+        "longitude": "-0.1275862"
+      }
+    }
+  ]
 }
