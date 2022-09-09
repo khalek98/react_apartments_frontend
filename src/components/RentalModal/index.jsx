@@ -26,12 +26,12 @@ const RentalModal = ({ show, setShow }) => {
       let newImgArr = [];
 
       Object.values(files).forEach((file) => {
-        newImgArr.push(`http://localhost:4000/uploads/${file.name}`);
+        newImgArr.push(`${process.env.REACT_APP_API_URL}/uploads/${file.name}`);
         formData.append('multiple_images', file);
       });
       setFormImgArr(newImgArr);
 
-      await axios.post('http://localhost:4000/upload', formData);
+      await axios.post(`${process.env.REACT_APP_API_URL}/upload`, formData);
     } catch (error) {
       console.warn(error);
       alert('Failed upload file...');
