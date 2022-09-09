@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import GoogleMapReact from 'google-map-react';
 import useSupercluster from 'use-supercluster';
 import { useLoadScript } from '@react-google-maps/api';
@@ -18,22 +18,25 @@ const center = {
   lng: 30.534732,
 };
 
-const libraries = ['places'];
-
 const Marker = ({ children }) => children;
 
 const Map = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAparts());
+  }, []);
+
+  const libraries = useMemo(() => ['places'], []);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
 
-  const dispatch = useDispatch();
   const { items: aparts, activePoint } = useSelector((state) => state.apart);
-
-  const mapRef = useRef(null);
   const [zoom, setZoom] = useState(12);
   const [bounds, setBounds] = useState('');
+  const mapRef = useRef(null);
 
   const points = aparts.map((apart) => ({
     type: 'Feature',
@@ -84,12 +87,74 @@ const Map = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchAparts());
-  }, []);
-
-  useEffect(() => {
     onSetActiveList();
   }, [clusters]);
+
+  const renderMarkers = useCallback(
+    (arr = clusters) => {
+      return arr.map((cluster) => {
+        const [longitude, latitude] = cluster.geometry.coordinates;
+        const { cluster: isCluster, point_count: pointCount } =
+          cluster.properties;
+        if (isCluster) {
+          return (
+            <Marker
+              key={`cluster-${cluster.id}`}
+              lat={latitude}
+              lng={longitude}
+            >
+              <div
+                className={`${styles.cluster_marker} ${
+                  activePoint && activePoint.id === cluster.id
+                    ? styles.active
+                    : ''
+                }`}
+                style={{
+                  width: `${25 + (pointCount / points.length) * 30}px`,
+                  height: `${25 + (pointCount / points.length) * 30}px`,
+                }}
+                onClick={() => {
+                  dispatch(setActivePoint(cluster));
+                  onSetActiveList(
+                    supercluster.getLeaves(
+                      cluster.id,
+                      cluster.properties.pointCount,
+                      0,
+                    ),
+                  );
+                }}
+              >
+                {pointCount}
+              </div>
+            </Marker>
+          );
+        }
+        return (
+          <Marker
+            key={cluster.properties.apartId}
+            lat={latitude}
+            lng={longitude}
+          >
+            <div
+              className={`${styles.cluster_img} ${
+                activePoint &&
+                activePoint.properties.apartId === cluster.properties.apartId
+                  ? styles.cluster_img_active
+                  : ''
+              } `}
+              onClick={() => {
+                dispatch(setActivePoint(cluster));
+                dispatch(setActiveList([cluster]));
+              }}
+            >
+              <img src={houseImg} alt="house" />
+            </div>
+          </Marker>
+        );
+      });
+    },
+    [clusters],
+  );
 
   if (loadError) return 'Error';
   if (!isLoaded) return 'Loading...';
@@ -110,7 +175,6 @@ const Map = () => {
           mapRef.current = map;
         }}
         onChange={({ zoom, bounds }) => {
-          dispatch(setActivePoint(null));
           setZoom(zoom);
           setBounds([
             bounds.nw.lng,
@@ -120,66 +184,7 @@ const Map = () => {
           ]);
         }}
       >
-        {clusters.map((cluster) => {
-          const [longitude, latitude] = cluster.geometry.coordinates;
-          const { cluster: isCluster, point_count: pointCount } =
-            cluster.properties;
-          if (isCluster) {
-            return (
-              <Marker
-                key={`cluster-${cluster.id}`}
-                lat={latitude}
-                lng={longitude}
-              >
-                <div
-                  className={`${styles.cluster_marker} ${
-                    activePoint && activePoint.id === cluster.id
-                      ? styles.active
-                      : ''
-                  }`}
-                  style={{
-                    width: `${25 + (pointCount / points.length) * 30}px`,
-                    height: `${25 + (pointCount / points.length) * 30}px`,
-                  }}
-                  onClick={() => {
-                    dispatch(setActivePoint(cluster));
-                    onSetActiveList(
-                      supercluster.getLeaves(
-                        cluster.id,
-                        cluster.properties.pointCount,
-                        0,
-                      ),
-                    );
-                  }}
-                >
-                  {pointCount}
-                </div>
-              </Marker>
-            );
-          }
-          return (
-            <Marker
-              key={cluster.properties.apartId}
-              lat={latitude}
-              lng={longitude}
-            >
-              <div
-                className={`${styles.cluster_img} ${
-                  activePoint &&
-                  activePoint.properties.apartId === cluster.properties.apartId
-                    ? styles.cluster_img_active
-                    : ''
-                } `}
-                onClick={() => {
-                  dispatch(setActivePoint(cluster));
-                  dispatch(setActiveList([cluster]));
-                }}
-              >
-                <img src={houseImg} alt="house" />
-              </div>
-            </Marker>
-          );
-        })}
+        {renderMarkers()}
       </GoogleMapReact>
     </div>
   );

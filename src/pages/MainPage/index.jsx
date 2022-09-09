@@ -10,15 +10,15 @@ const MainPage = () => {
   const { activeList, status } = useSelector((state) => state.apart);
   const [fullscreen, setFullscreen] = useState(false);
 
-  const getRes = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/aparts`);
+  // const getRes = async () => {
+  //   const res = await axios.get(`${process.env.REACT_APP_API_URL}/aparts`);
 
-    console.log(res.data);
-  };
+  //   console.log(res.data);
+  // };
 
-  useEffect(() => {
-    getRes();
-  }, []);
+  // useEffect(() => {
+  //   getRes();
+  // }, []);
 
   return (
     <div className={`wrapper${fullscreen ? ' full_apart' : ''}`}>

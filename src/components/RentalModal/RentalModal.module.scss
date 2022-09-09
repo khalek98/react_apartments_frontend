@@ -1,0 +1,75 @@
+.modal_form {
+  @media (max-width: 767px) {
+    overflow-y: scroll;
+    height: 85vh;
+  }
+}
+
+:global {
+  .modal-dialog {
+    @media (max-width: 767px) {
+      margin: 20px !important;
+    }
+  }
+}
+
+.images_group {
+  display: flex;
+  margin-left: 10px;
+  gap: 20px 10px;
+  flex-wrap: wrap;
+
+  &_item {
+    position: relative;
+    display: flex;
+    height: 45px;
+    width: 45px;
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.button {
+  &_download {
+    height: 50px;
+  }
+
+  &_close {
+    padding: 2px;
+    position: absolute;
+    z-index: 99;
+    top: -10px;
+    right: -10px;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 1px solid powderblue;
+    opacity: 0.4;
+    background: rgb(255, 255, 255);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    span {
+      margin: 5px;
+      display: block;
+      height: 1px;
+      width: 10px;
+      background-color: #000;
+
+      &:nth-child(1) {
+        transform: translate(-3px, 2px) rotate(-45deg);
+      }
+      &:nth-child(2) {
+        transform: translate(-3px, -4px) rotate(45deg);
+      }
+    }
+  }
+}

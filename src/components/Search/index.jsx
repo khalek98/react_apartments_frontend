@@ -40,6 +40,7 @@ const Search = ({ setFormLocation }) => {
       <Form.Group className="mb-3">
         <Form.Label>Адреса</Form.Label>
         <Form.Control
+          required
           value={value}
           onChange={handleInput}
           disabled={!ready}
