@@ -7,6 +7,7 @@ import styles from './Header.module.scss';
 
 const Header = () => {
   const [show, setShow] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
 
   const handleShow = () => setShow(true);
 
@@ -14,13 +15,13 @@ const Header = () => {
     <>
       <div className={styles.root}>
         <Container>
-          {/* <img src="#" alt="logo" /> */}
           <Button variant="warning" onClick={handleShow}>
             Здати в оренду +
           </Button>
         </Container>
       </div>
       <RentalModal show={show} setShow={setShow} />
+      
     </>
   );
 };

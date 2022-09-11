@@ -11,6 +11,7 @@ const initialState = {
   activeList: [],
   activePoint: null,
   status: 'loading',
+  modalFulfilled: 'hold'
 };
 
 export const apartSlice = createSlice({

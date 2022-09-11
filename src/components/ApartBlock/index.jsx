@@ -6,19 +6,27 @@ import styles from './ApartBlock.module.scss';
 const ApartBlock = ({ imgArr, title, description, price }) => {
   return (
     <div className={styles.root}>
-      <Carousel>
-        {imgArr.map((img, i) => {
-          return (
-            <Carousel.Item key={`item-${i}`}>
-              <img
-                className={`d-block w-100 ${styles.image}`}
-                src={img}
-                alt={title}
-              />
-            </Carousel.Item>
-          );
-        })}
-      </Carousel>
+      {imgArr.length > 0 ? (
+        <Carousel>
+          {imgArr.map((img, i) => {
+            return (
+              <Carousel.Item key={`item-${i}`}>
+                <img
+                  className={`d-block w-100 ${styles.image}`}
+                  src={img}
+                  alt={title}
+                />
+              </Carousel.Item>
+            );
+          })}
+        </Carousel>
+      ) : (
+        <img
+          className={`d-block w-100 ${styles.image}`}
+          src="https://pbs.twimg.com/media/C5OTOt3UEAAExIk?format=jpg&name=small"
+          alt="not found"
+        />
+      )}
       <div className={styles.bottom_wrap}>
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.descr}>

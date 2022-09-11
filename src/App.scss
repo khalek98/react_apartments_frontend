@@ -55,9 +55,7 @@
 .apart_wrap {
   padding: 15px;
   overflow-y: scroll;
-  display: grid;
-  grid-template: 450px / 100%;
-  grid-auto-rows: auto;
+  display: flex;
   flex-direction: column;
   row-gap: 15px;
 
@@ -69,4 +67,25 @@
     padding: 30px 50px;
     row-gap: 25px;
   }
+}
+
+.apart_group {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+}
+
+.my-apart-enter {
+  transform: scale(0.9);
+}
+.my-apart-enter-active {
+  transform: scale(1);
+  transition: all 300ms ease-in;
+}
+.my-apart-exit {
+  transform: scale(1);
+}
+.my-apart-exit-active {
+  transform: scale(0.5);
+  transition: all 300ms ease-in;
 }

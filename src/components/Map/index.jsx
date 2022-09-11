@@ -20,7 +20,7 @@ const center = {
 
 const Marker = ({ children }) => children;
 
-const Map = () => {
+const Map = ({ onSetTopApartWrap }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,6 +68,7 @@ const Map = () => {
   });
 
   const onSetActiveList = (arr = clusters) => {
+    onSetTopApartWrap();
     let newArr = [];
     arr.forEach((cluster) => {
       const { cluster: isCluster } = cluster.properties;
@@ -153,7 +154,7 @@ const Map = () => {
         );
       });
     },
-    [clusters],
+    [clusters, activePoint],
   );
 
   if (loadError) return 'Error';

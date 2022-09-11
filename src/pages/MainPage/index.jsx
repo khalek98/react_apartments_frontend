@@ -3,27 +3,23 @@ import { useSelector } from 'react-redux';
 import ApartBlock from '../../components/ApartBlock';
 import backButton from '../../assets/icons/back-button.svg';
 import fullscreenButton from '../../assets/icons/fullscreen.svg';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useRef, useState } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const MainPage = () => {
   const { activeList, status } = useSelector((state) => state.apart);
   const [fullscreen, setFullscreen] = useState(false);
 
-  // const getRes = async () => {
-  //   const res = await axios.get(`${process.env.REACT_APP_API_URL}/aparts`);
-
-  //   console.log(res.data);
-  // };
-
-  // useEffect(() => {
-  //   getRes();
-  // }, []);
+  const apartWrap = useRef(null);
+  const onSetTopApartWrap = () => {
+    apartWrap.current.scrollTo(0, 0);
+  };
 
   return (
     <div className={`wrapper${fullscreen ? ' full_apart' : ''}`}>
-      <Map />
+      <Map onSetTopApartWrap={onSetTopApartWrap} />
       <div
+        ref={apartWrap}
         className={`apart_wrap ${
           status === 'loading' ? 'apart_wrap_loading' : ''
         }`}
@@ -36,12 +32,20 @@ const MainPage = () => {
           />
         </div>
         {activeList.length > 0 ? (
-          activeList.map((apart) => (
-            <ApartBlock
-              key={`block-${apart.properties.apartId}`}
-              {...apart.properties}
-            />
-          ))
+          <TransitionGroup className="apart_group">
+            {activeList.map((apart) => (
+              <CSSTransition
+                key={`block-${apart.properties.apartId}`}
+                timeout={{ enter: 300 }}
+                classNames="my-apart"
+              >
+                <ApartBlock
+                  key={`block-${apart.properties.apartId}`}
+                  {...apart.properties}
+                />
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
         ) : (
           <h2>У цій видимій зоні немає квартир.</h2>
         )}
