@@ -1,25 +1,75 @@
 import { nanoid } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { useRef, useState } from 'react';
-import { Button, Modal, Form, InputGroup, Spinner } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { addNewApart } from '../../redux/Slices/apartSlice';
+import { useForm, Controller } from 'react-hook-form';
+import {
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Stack,
+  FormControl,
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  FormHelperText,
+  FormLabel,
+  FormGroup,
+} from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import SendIcon from '@mui/icons-material/Send';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+
 import Search from '../Search';
 
 import styles from './RentalModal.module.scss';
 
-const RentalModal = ({ show, setShow }) => {
+const RentalModal = ({ open, setOpen }) => {
   const dispatch = useDispatch();
-  const [formTitle, setFormTitle] = useState('');
-  const [formTextarea, setFormTextarea] = useState('');
-  const [formPrice, setFormPrice] = useState(0);
-  const [formImgArr, setFormImgArr] = useState([]);
-  const [formLocation, setFormLocation] = useState([]);
+  const {
+    reset,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
+    criteriaMode: 'all',
+  });
+
+  const [formDataObj, setFormDataObj] = useState({
+    id: nanoid(),
+    title: '',
+    description: '',
+    price: +'',
+    imgArr: [],
+    location: {
+      longitude: '',
+      latitude: '',
+    },
+  });
   const inputFileRef = useRef(null);
   const [postStatus, setPostStatus] = useState('hold');
+  const [loadFiles, setLoadFiles] = useState(false);
 
-  const handleClose = () => setShow(false);
+  const onChangeInputs = (prop, value) => {
+    setFormDataObj({
+      ...formDataObj,
+      [prop]: value,
+    });
+  };
+
+  // console.log(formDataObj);
+
+  const handleClose = () => setOpen(false);
   const handleChangeFile = async (e) => {
+    setLoadFiles(true);
+    if (e.target.files.length <= 0) return;
+
     try {
       const formData = new FormData();
       const files = e.target.files;
@@ -29,120 +79,202 @@ const RentalModal = ({ show, setShow }) => {
         newImgArr.push(`${process.env.REACT_APP_API_URL}/uploads/${file.name}`);
         formData.append('multiple_images', file);
       });
-      setFormImgArr(newImgArr);
 
-      await axios.post(`${process.env.REACT_APP_API_URL}/upload`, formData);
+      await axios
+        .post(`${process.env.REACT_APP_API_URL}/upload`, formData)
+        .then((res) => res.status === 200 && setLoadFiles(false))
+        .then(() => setFormDataObj({ ...formDataObj, imgArr: newImgArr }));
+      // .finally(() => setLoadFiles(false));
     } catch (error) {
-      console.warn(error);
+      console.log(error);
       alert('Failed upload file...');
+    } finally {
+      setLoadFiles(false);
     }
   };
   const handleDeleteImg = (i) => {
-    setFormImgArr((state) => {
-      const oldArr = [...state];
-      oldArr.splice(i, 1);
-      return oldArr;
+    setFormDataObj((state) => {
+      const oldImgArr = state.imgArr;
+      oldImgArr.splice(i, 1);
+      return { ...state, imgArr: oldImgArr };
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const submitForm = async (e) => {
+    console.log(e);
     setPostStatus('loading');
 
-    const formData = {
-      id: nanoid(),
-      title: formTitle,
-      description: formTextarea,
-      price: +formPrice,
-      imgArr: formImgArr,
-      location: formLocation,
-    };
-
-    console.log(formData);
-
     try {
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/aparts`, formData)
-        .then((res) => setPostStatus(res.statusText))
-        .then(dispatch(addNewApart(formData)));
+      await axios
+        .post(`${process.env.REACT_APP_API_URL}/aparts`, formDataObj)
+        .then((res) => res.status === 200)
+        .then(() => setPostStatus('success'))
+        .then(dispatch(addNewApart(formDataObj)));
     } catch (error) {
-      alert('Щось пiшло не так...');
       console.error(error);
-      setPostStatus('hold');
+      const {
+        response: { data },
+      } = error;
+      data.forEach((err) =>
+        console.log(`${err.param.toUpperCase()}: `, err.msg),
+      );
+      setPostStatus('rejected');
     } finally {
-      setFormTitle('');
-      setFormTextarea('');
-      setFormPrice(0);
-      setFormImgArr([]);
-      setFormLocation([]);
-      setTimeout(() => setShow(false), 2500);
-      setTimeout(() => setPostStatus('hold'), 2700);
+      setTimeout(() => setOpen(false), 2500);
+      setTimeout(() => {
+        setPostStatus('hold');
+        reset();
+        setFormDataObj({
+          id: nanoid(),
+          title: '',
+          description: '',
+          price: +'',
+          imgArr: [],
+          location: {
+            longitude: '',
+            latitude: '',
+          },
+        });
+      }, 3500);
     }
   };
 
+  console.log(postStatus);
+
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Dialog open={open} onClose={handleClose}>
         {postStatus === 'hold' && (
-          <Form className={styles.modal_form} onSubmit={handleSubmit}>
-            <Modal.Header closeButton>
-              <Modal.Title>Заповнiть опис</Modal.Title>
-            </Modal.Header>
+          <form noValidate onSubmit={handleSubmit(submitForm)}>
+            <DialogTitle>Заповнiтьданнi</DialogTitle>
+            <DialogContent>
+              <Controller
+                control={control}
+                name="title"
+                rules={{
+                  required: "Обов'язкове поле",
+                  validate: (value) => {
+                    if (value && value.length < 5) {
+                      return 'Мiнiмальна довжина заголовку 5 символiв';
+                    }
+                    return true;
+                  },
+                }}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      id="demo-helper-text-aligned"
+                      label="Заголовок"
+                      placeholder="Здам 2к квартиру..."
+                      onChange={(e) => {
+                        field.onChange(e);
+                        onChangeInputs('title', e.target.value);
+                      }}
+                      value={field.value}
+                      fullWidth
+                      margin="normal"
+                      error={!!errors.title?.message}
+                      helperText={errors?.title?.message}
+                    />
+                  );
+                }}
+              />
 
-            <Modal.Body>
-              <Form.Group className="mb-3">
-                <Form.Label>Заголовок</Form.Label>
-                <Form.Control
-                  required
-                  value={formTitle}
-                  placeholder="Здаю в оренду 2к квартиру"
-                  onChange={(e) => setFormTitle(e.target.value)}
-                />
-              </Form.Group>
+              <Controller
+                control={control}
+                name="description"
+                rules={{
+                  required: "Обов'язкове поле",
+                  validate: (value) => {
+                    if (value && value.length < 10) {
+                      return 'Мiнiмальна довжина заголовку 10 символи';
+                    }
+                    return true;
+                  },
+                }}
+                render={({ field }) => {
+                  return (
+                    <TextField
+                      id="demo-helper-text-aligned"
+                      label="Опис об'яви"
+                      placeholder="Опишiть деталi: що поруч, iнраструктуру, поверх i т.д."
+                      multiline
+                      minRows={3}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        onChangeInputs('description', e.target.value);
+                      }}
+                      value={field.value}
+                      fullWidth
+                      margin="normal"
+                      error={!!errors.description?.message}
+                      helperText={errors?.description?.message}
+                    />
+                  );
+                }}
+              />
 
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
-                <Form.Label>Опис</Form.Label>
-                <Form.Control
-                  required
-                  as="textarea"
-                  rows={3}
-                  value={formTextarea}
-                  onChange={(e) => setFormTextarea(e.target.value)}
-                />
-              </Form.Group>
+              <Controller
+                control={control}
+                name="price"
+                rules={{
+                  required: "Обов'язкове поле",
+                  validate: (value) => {
+                    if (value && value <= 0) {
+                      return 'Мiнiмальне значення "1"';
+                    }
+                    return true;
+                  },
+                }}
+                render={({ field }) => {
+                  return (
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel shrink error={!!errors.price?.message}>
+                        Цiна
+                      </InputLabel>
+                      <OutlinedInput
+                        onChange={(e) => {
+                          const transformValue = +e.target.value.replace(
+                            /[^0-9]/g,
+                            '',
+                          );
+                          field.onChange(transformValue);
+                          onChangeInputs('price', transformValue);
+                        }}
+                        value={field.value}
+                        error={!!errors.price?.message}
+                        // helperText={errors?.price?.message}
+                        inputMode="numeric"
+                        id="outlined-adornment-amount"
+                        startAdornment={
+                          <InputAdornment position="start">ГРН</InputAdornment>
+                        }
+                        label="Цiна"
+                      />
+                      <FormHelperText error={!!errors?.price?.message}>
+                        {errors?.price?.message}
+                      </FormHelperText>
+                    </FormControl>
+                  );
+                }}
+              />
 
-              <Form.Group className="mb-3">
-                <Form.Label>Цiна</Form.Label>
-                <InputGroup>
-                  <InputGroup.Text>UAH</InputGroup.Text>
-                  <Form.Control
-                    required
-                    value={formPrice}
-                    type="number"
-                    onChange={(e) => setFormPrice(e.target.value)}
-                  />
-                </InputGroup>
-              </Form.Group>
-
-              <Form.Group className="mb-3 d-flex flex-column">
-                <Form.Label>Завантажити зображення</Form.Label>
-
-                <div className="d-flex">
-                  <Button
+              <FormGroup style={{ marginBottom: 15 }}>
+                <FormLabel style={{ marginBottom: 15 }}>
+                  Завантажити зображення
+                </FormLabel>
+                <div className={styles.images_wrapper}>
+                  <LoadingButton
                     className={styles.button_download}
                     onClick={() => inputFileRef.current.click()}
-                    variant="primary"
-                    size="large"
+                    variant="contained"
+                    loading={loadFiles}
                   >
-                    Download
-                  </Button>
+                    Завантажити
+                  </LoadingButton>
 
                   <div className={styles.images_group}>
-                    {formImgArr.map((imgUrl, i) => (
+                    {formDataObj.imgArr.map((imgUrl, i) => (
                       <div className={styles.images_group_item} key={i}>
                         <div
                           className={styles.button_close}
@@ -164,52 +296,34 @@ const RentalModal = ({ show, setShow }) => {
                   onChange={handleChangeFile}
                   hidden
                 />
-              </Form.Group>
+              </FormGroup>
 
-              <Search setFormLocation={setFormLocation} />
-            </Modal.Body>
+              <Search onChangeInputs={onChangeInputs} />
+            </DialogContent>
 
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Закрити
-              </Button>
-
-              <Button variant="primary" type="submit">
-                Здати в оренду
-              </Button>
-            </Modal.Footer>
-          </Form>
+            <DialogActions>
+              <Stack spacing={2} direction="row" marginBottom={1}>
+                <Button onClick={handleClose}>Закрити</Button>
+                <LoadingButton
+                  type="submit"
+                  endIcon={<SendIcon />}
+                  loading={postStatus === 'loading'}
+                  loadingPosition="end"
+                  variant="contained"
+                >
+                  Здати в оренду
+                </LoadingButton>
+              </Stack>
+            </DialogActions>
+          </form>
         )}
 
-        {postStatus === 'loading' && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>Завантаження на сервер...</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Spinner
-                style={{ display: 'block', margin: '30px auto' }}
-                animation="border"
-                role="status"
-              >
-                <span className="visually-hidden">Завантаження...</span>
-              </Spinner>
-            </Modal.Body>
-          </>
+        {postStatus === 'success' && (
+          <DialogTitle>
+            Успiшно <DoneAllIcon color="success" />
+          </DialogTitle>
         )}
-
-        {/* Success */}
-        {postStatus === 'OK' && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>Успiшно!</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <h3 className="mb-3">Об'яву успiшно додано!</h3>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
+      </Dialog>
     </>
   );
 };

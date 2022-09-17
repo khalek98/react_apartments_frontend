@@ -1,40 +1,84 @@
-.modal_form {
-  @media (max-width: 767px) {
-    overflow-y: scroll;
-    height: 85vh;
-  }
-}
-
-:global {
-  .modal-dialog {
+.modal {
+  &_form {
+    border-radius: 6px;
     @media (max-width: 767px) {
-      margin: 20px !important;
+      overflow-y: scroll;
+      height: 85vh;
     }
   }
 }
 
-.images_group {
-  display: flex;
-  margin-left: 10px;
-  gap: 20px 10px;
-  flex-wrap: wrap;
+.inputs {
+  width: 100%;
+}
 
-  &_item {
-    position: relative;
+// :global {
+//   .modal-dialog {
+//     @media (max-width: 767px) {
+//       margin: 20px !important;
+//     }
+//   }
+// }
+
+:global .MuiFormGroup-root {
+  flex-wrap: nowrap;
+}
+
+:global .MuiDialog-paper {
+  border-radius: 10px;
+  max-width: 500px;
+}
+
+:global .MuiDialogActions-root {
+  padding: 0 24px 8px;
+}
+.images {
+  &_wrapper {
     display: flex;
-    height: 45px;
-    width: 45px;
+    align-items: flex-start;
+  }
 
-    img {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
+  &_group {
+    display: flex;
+    margin-left: 10px;
+    gap: 20px 30px;
+    flex-wrap: wrap;
+    max-width: 60%;
+
+    &_item {
+      position: relative;
+      display: flex;
+      height: 45px;
+      width: 45px;
+
+      img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    &_wrapper {
+      row-gap: 20px;
+      flex-direction: column;
+    }
+    &_group {
+      gap: 20px 20px;
+
+      max-width: unset;
+      margin-left: unset;
+      justify-content: flex-start;
     }
   }
 }
 
 .button {
   &_download {
+    padding: 10px;
+    width: 100%;
+    max-width: 150px;
     height: 50px;
   }
 
@@ -71,5 +115,21 @@
         transform: translate(-3px, -4px) rotate(45deg);
       }
     }
+  }
+  @media (max-width: 767px) {
+    &_download {
+      max-width: unset;
+      width: 100%;
+    }
+  }
+}
+
+.errorMessage {
+  margin-top: 10px !important;
+  color: #bf1650;
+
+  &:before {
+    content: '⚠ ';
+    display: inline;
   }
 }

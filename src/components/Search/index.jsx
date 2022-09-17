@@ -1,65 +1,140 @@
-import { Form, ListGroup } from 'react-bootstrap';
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from 'use-places-autocomplete';
+import { Autocomplete, Grid, Box, TextField, Typography } from '@mui/material';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import parse from 'autosuggest-highlight/parse';
+import { useEffect, useState } from 'react';
 
-const Search = ({ setFormLocation }) => {
+const Search = ({ onChangeInputs }) => {
+  const [options, setOptions] = useState([]);
+
   const {
-    ready,
     value,
-    suggestions: { status, data },
+    suggestions: { data },
     setValue,
     clearSuggestions,
   } = usePlacesAutocomplete({
+    debounce: 400,
     requestOptions: {
       location: { lat: () => 50.446506, lng: () => 30.534732 },
-      radius: 100 * 1000,
+      radius: 100,
     },
   });
 
-  const handleInput = (e) => {
-    setValue(e.target.value);
-  };
-
-  const handleSelect = async (address) => {
+  const onGetLocation = (address) => {
     setValue(address, false);
     clearSuggestions();
 
     try {
-      const results = await getGeocode({ address });
-      const { lat, lng } = await getLatLng(results[0]);
-      setFormLocation({ latitude: lat.toString(), longitude: lng.toString() });
+      getGeocode({ address })
+        .then((res) => getLatLng(res[0]))
+        .then(({ lat, lng }) => {
+          onChangeInputs('location', {
+            latitude: lat.toString(),
+            longitude: lng.toString(),
+          });
+        });
     } catch (error) {
       console.log('😱 Error: ', error);
     }
   };
 
+  useEffect(() => {
+    setOptions(data);
+  }, [data]);
+
   return (
-    <div className="search">
-      <Form.Group className="mb-3">
-        <Form.Label>Адреса</Form.Label>
-        <Form.Control
-          required
-          value={value}
-          onChange={handleInput}
-          disabled={!ready}
-          placeholder="Enter an address"
-        />
-        <ListGroup>
-          {status === 'OK' &&
-            data.map(({ place_id, description }) => (
-              <ListGroup.Item
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleSelect(description)}
-                key={place_id}
-              >
-                {description}
-              </ListGroup.Item>
-            ))}
-        </ListGroup>
-      </Form.Group>
-    </div>
+    <Autocomplete
+      id="google-map-demo"
+      getOptionLabel={(option) =>
+        typeof option === 'string' ? option : option.description
+      }
+      filterOptions={(x) => x}
+      options={options}
+      autoComplete
+      includeInputInList
+      filterSelectedOptions
+      value={value}
+      isOptionEqualToValue={(optionEq, valueEq) =>
+        optionEq.description === valueEq
+      }
+      onChange={(e, newValue) => {
+        setOptions(newValue ? [newValue, ...options] : options);
+        newValue && onGetLocation(newValue.description);
+      }}
+      onInputChange={(e, newInputValue) => {
+        setValue(newInputValue);
+      }}
+      renderInput={(params) => (
+        <TextField {...params} label="Адреса" fullWidth />
+      )}
+      renderOption={(props, option) => {
+        try {
+          const matches =
+            option.structured_formatting?.main_text_matched_substrings;
+
+          const parts = parse(
+            option.structured_formatting.main_text,
+            matches?.map((match) => [
+              match.offset,
+              match.offset + match.length,
+            ]),
+          );
+
+          return (
+            <li {...props}>
+              <Grid container alignItems="center">
+                <Grid item>
+                  <Box
+                    component={LocationOnIcon}
+                    sx={{ color: 'text.secondary', mr: 2 }}
+                  />
+                </Grid>
+                <Grid item xs>
+                  {parts.map((part, index) => (
+                    <span
+                      key={index}
+                      style={{
+                        fontWeight: part.highlight ? 700 : 400,
+                      }}
+                    >
+                      {part.text}
+                    </span>
+                  ))}
+
+                  <Typography variant="body2" color="text.secondary">
+                    {option.structured_formatting.secondary_text}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </li>
+          );
+        } catch (error) {
+          console.log(error);
+          return (
+            <li {...props}>
+              <Grid container alignItems="center">
+                <Grid item>
+                  <Box
+                    component={LocationOnIcon}
+                    sx={{ color: 'text.secondary', mr: 2 }}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <span>{option.structured_formatting.main_text}</span>
+
+                  <Typography variant="body2" color="text.secondary">
+                    {option.structured_formatting.secondary_text}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </li>
+          );
+        }
+      }}
+    />
   );
 };
 

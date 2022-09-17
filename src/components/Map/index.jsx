@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import GoogleMapReact from 'google-map-react';
 import useSupercluster from 'use-supercluster';
 import { useLoadScript } from '@react-google-maps/api';
@@ -25,6 +25,7 @@ const Map = ({ onSetTopApartWrap }) => {
 
   useEffect(() => {
     dispatch(fetchAparts());
+    // eslint-disable-next-line
   }, []);
 
   const libraries = useMemo(() => ['places'], []);
@@ -89,6 +90,7 @@ const Map = ({ onSetTopApartWrap }) => {
 
   useEffect(() => {
     onSetActiveList();
+    // eslint-disable-next-line
   }, [clusters]);
 
   const renderMarkers = useCallback(
@@ -154,6 +156,7 @@ const Map = ({ onSetTopApartWrap }) => {
         );
       });
     },
+    // eslint-disable-next-line
     [clusters, activePoint],
   );
 

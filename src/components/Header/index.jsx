@@ -1,27 +1,25 @@
 import { useState } from 'react';
-import { Button, Container } from 'react-bootstrap';
+import { Button, Container } from '@mui/material';
 
 import RentalModal from '../RentalModal';
 
 import styles from './Header.module.scss';
 
 const Header = () => {
-  const [show, setShow] = useState(false);
-  const [showModalSuccess, setShowModalSuccess] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => setOpen(true);
 
   return (
     <>
       <div className={styles.root}>
         <Container>
-          <Button variant="warning" onClick={handleShow}>
+          <Button color="warning" variant="contained" onClick={handleShow}>
             Здати в оренду +
           </Button>
         </Container>
       </div>
-      <RentalModal show={show} setShow={setShow} />
-      
+      <RentalModal open={open} setOpen={setOpen} />
     </>
   );
 };
