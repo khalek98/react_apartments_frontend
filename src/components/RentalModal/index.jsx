@@ -63,8 +63,6 @@ const RentalModal = ({ open, setOpen }) => {
     });
   };
 
-  // console.log(formDataObj);
-
   const handleClose = () => setOpen(false);
   const handleChangeFile = async (e) => {
     setLoadFiles(true);
@@ -139,12 +137,10 @@ const RentalModal = ({ open, setOpen }) => {
     }
   };
 
-  console.log(postStatus);
-
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
-        {(postStatus === 'hold' || postStatus === 'success') && (
+        {(postStatus === 'hold' || postStatus === 'loading') && (
           <form noValidate onSubmit={handleSubmit(submitForm)}>
             <DialogTitle>Заповнiтьданнi</DialogTitle>
             <DialogContent>
