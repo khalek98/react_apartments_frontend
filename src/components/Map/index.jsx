@@ -2,13 +2,13 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import GoogleMapReact from 'google-map-react';
 import useSupercluster from 'use-supercluster';
 import { useLoadScript } from '@react-google-maps/api';
-
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   fetchAparts,
   setActiveList,
   setActivePoint,
-} from '../../redux/Slices/apartSlice.js';
+} from '../../redux/Slices/apart';
 
 import styles from './Map.module.scss';
 import houseImg from '../../assets/icons/house.svg';
@@ -35,7 +35,7 @@ const Map = ({ onSetTopApartWrap }) => {
   });
 
   const { items: aparts, activePoint } = useSelector((state) => state.apart);
-  const [zoom, setZoom] = useState(12);
+  const [zoom, setZoom] = useState(11);
   const [bounds, setBounds] = useState('');
   const mapRef = useRef(null);
 
@@ -173,7 +173,7 @@ const Map = ({ onSetTopApartWrap }) => {
           fullscreenControl: true,
         }}
         defaultCenter={center}
-        defaultZoom={12}
+        defaultZoom={11}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map }) => {
           mapRef.current = map;

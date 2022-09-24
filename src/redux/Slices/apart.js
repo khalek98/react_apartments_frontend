@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const fetchAparts = createAsyncThunk('apart/fetchAparts', async () => {
-  const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/aparts`);
+  const { data } = await axios.get(`/aparts`);
   return data;
 });
 
@@ -11,10 +11,10 @@ const initialState = {
   activeList: [],
   activePoint: null,
   status: 'loading',
-  modalFulfilled: 'hold'
+  modalFulfilled: 'hold',
 };
 
-export const apartSlice = createSlice({
+const apartSlice = createSlice({
   name: 'apart',
   initialState,
   reducers: {
@@ -48,4 +48,4 @@ export const apartSlice = createSlice({
 export const { setActiveList, setActivePoint, addNewApart } =
   apartSlice.actions;
 
-export default apartSlice.reducer;
+export const apartReducer = apartSlice.reducer;

@@ -1,8 +1,8 @@
 import { nanoid } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios from '../../axios';
 import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addNewApart } from '../../redux/Slices/apartSlice';
+import { addNewApart } from '../../redux/Slices/apart';
 import { useForm, Controller } from 'react-hook-form';
 import {
   TextField,
@@ -79,10 +79,9 @@ const RentalModal = ({ open, setOpen }) => {
       });
 
       await axios
-        .post(`${process.env.REACT_APP_API_URL}/upload`, formData)
+        .post(`/upload`, formData)
         .then((res) => res.status === 200 && setLoadFiles(false))
         .then(() => setFormDataObj({ ...formDataObj, imgArr: newImgArr }));
-      // .finally(() => setLoadFiles(false));
     } catch (error) {
       console.log(error);
       alert('Failed upload file...');
@@ -104,7 +103,7 @@ const RentalModal = ({ open, setOpen }) => {
 
     try {
       await axios
-        .post(`${process.env.REACT_APP_API_URL}/aparts`, formDataObj)
+        .post(`/aparts`, formDataObj)
         .then((res) => res.status === 200)
         .then(() => setPostStatus('success'))
         .then(dispatch(addNewApart(formDataObj)));

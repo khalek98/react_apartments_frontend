@@ -1,8 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import apart from './Slices/apartSlice';
+import { apartReducer } from './Slices/apart';
+import { authReducer } from './Slices/auth';
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
-    apart,
+    apart: apartReducer,
+    auth: authReducer,
   },
 });
+
+export default store;

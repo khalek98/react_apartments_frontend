@@ -2,5 +2,23 @@
   height: 70px;
   background-color: #0b5ed7;
   display: flex;
-  align-items: center;
+  justify-content: center;
+}
+
+:global .MuiDrawer-paperAnchorRight {
+  width: 35%;
+  @media (max-width: 991px) {
+    width: 100%;
+  }
+}
+
+.alert {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 99;
+  @media (max-width: 767px) {
+    top: 75px;
+    left: 5px;
+  }
 }
