@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { AppBar, Button, Container, Toolbar, Alert } from '@mui/material';
+import {
+  AppBar,
+  Button,
+  Container,
+  Toolbar,
+  Alert,
+  IconButton,
+  Menu,
+  MenuItem,
+} from '@mui/material';
+import { AccountCircle } from '@mui/icons-material';
 
 import RentalModal from '../RentalModal';
 import SignIn from '../SignIn';
@@ -19,6 +29,15 @@ const Header = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const toggleDrawer = (trigger, open) => (event) => {
     if (
@@ -51,6 +70,7 @@ const Header = () => {
       window.localStorage.removeItem('token');
       // navigate('/', { replace: true });
     }
+    setAnchorEl(null);
   };
 
   useEffect(() => {
@@ -74,13 +94,41 @@ const Header = () => {
                 >
                   Здати в оренду +
                 </Button>
-                <Button
+                {/* <Button
                   onClick={onClickLogout}
                   variant="contained"
                   color="error"
                 >
                   Вийти
-                </Button>
+                </Button> */}
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={onClickLogout}>Вийти</MenuItem>
+                </Menu>
               </>
             ) : (
               <>

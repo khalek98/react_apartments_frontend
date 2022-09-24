@@ -82,7 +82,7 @@
     height: 50px;
   }
 
-  &_close {
+  &_remove {
     padding: 2px;
     position: absolute;
     z-index: 99;
@@ -122,6 +122,11 @@
       width: 100%;
     }
   }
+  @media (max-width: 424px) {
+    &_close {
+      display: none;
+    }
+  }
 }
 
 .errorMessage {
@@ -131,5 +136,19 @@
   &:before {
     content: '⚠ ';
     display: inline;
+  }
+}
+
+.alert {
+  &_ad {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 9999;
+  }
+
+  @media (max-width: 767px) {
+    bottom: 5px;
+    left: 5px;
   }
 }

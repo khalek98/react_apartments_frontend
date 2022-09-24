@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Drawer,
@@ -20,7 +21,7 @@ import {
 } from '@mui/material';
 
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import Visibility from '@mui/icons-material/Visibility';
@@ -36,37 +37,51 @@ const SignIn = ({ showSignIn, toggleDrawer }) => {
   const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [errorAuth, setErrorAuth] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
     reset,
   } = useForm();
 
   const onSubmit = (e) => async (value) => {
     e.preventDefault();
+
     const data = await dispatch(fetchAuth(value));
+    try {
+      if (!data.payload) {
+        console.log('Помилка аутентифікації');
+      }
 
-    if (!data.payload) {
-      return console.log('Помилка аутентифікації');
+      if (!!data.payload && 'token' in data.payload) {
+        window.localStorage.setItem('token', data.payload.token);
+      } else {
+        throw new Error('Невірний логін або пароль');
+      }
+
+      reset({ email: '', password: '' });
+      toggleDrawer('signIn', false)(e);
+    } catch (err) {
+      setErrorAuth(true);
+      console.log(err);
+    } finally {
+      setShowPassword(false);
+
+      dispatch(setSignIn());
     }
-
-    if ('token' in data.payload) {
-      window.localStorage.setItem('token', data.payload.token);
-    }
-
-    setShowPassword(false);
-    toggleDrawer('signIn', false)(e);
-
-    dispatch(setSignIn());
   };
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({ email: '', password: '' });
-    }
-  }, [isSubmitSuccessful, reset]);
+  const errorAuthClear = () => {
+    if (errorAuth) setErrorAuth(false);
+  };
+
+  // useEffect(() => {
+  //   if (isSubmitSuccessful) {
+  //     reset({ email: '', password: '' });
+  //   }
+  // }, [isSubmitSuccessful, reset]);
 
   return (
     <>
@@ -105,6 +120,7 @@ const SignIn = ({ showSignIn, toggleDrawer }) => {
             </Typography>
             <Box
               component="form"
+              onChange={errorAuthClear}
               onSubmit={(e) => {
                 // toggleDrawer('signIn', false)(e);
                 handleSubmit(onSubmit(e))(e);
@@ -181,6 +197,9 @@ const SignIn = ({ showSignIn, toggleDrawer }) => {
                   {errors.password?.message}
                 </FormHelperText>
               </FormControl>
+              {errorAuth && (
+                <Alert severity="error">Невірний логін або пароль</Alert>
+              )}
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Запам'ятати мене"

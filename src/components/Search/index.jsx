@@ -7,7 +7,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import parse from 'autosuggest-highlight/parse';
 import { useEffect, useState } from 'react';
 
-const Search = ({ onChangeInputs }) => {
+const Search = ({ onChangeInputs, register, errors }) => {
   const [options, setOptions] = useState([]);
 
   const {
@@ -68,7 +68,16 @@ const Search = ({ onChangeInputs }) => {
         setValue(newInputValue);
       }}
       renderInput={(params) => (
-        <TextField {...params} label="Адреса" fullWidth />
+        <TextField
+          error={Boolean(errors.autocomplete?.message)}
+          helperText={errors.autocomplete?.message}
+          {...register('autocomplete', {
+            required: "Поле обов'язкове",
+          })}
+          {...params}
+          label="Адреса"
+          fullWidth
+        />
       )}
       renderOption={(props, option) => {
         try {
