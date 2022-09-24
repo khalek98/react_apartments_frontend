@@ -11,6 +11,7 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchAuthUser());
+    // eslint-disable-next-line
   }, []);
 
   return (
