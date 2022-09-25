@@ -19,6 +19,7 @@ import styles from './Header.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectIsAuth, signOut } from '../../redux/Slices/auth';
 import { useEffect } from 'react';
+import UserInfo from '../UserInfo/UserInfo';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -30,12 +31,13 @@ const Header = () => {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showUserInfo, setShowUserInfo] = useState(false);
 
-  const handleMenu = (event) => {
+  const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
@@ -63,6 +65,11 @@ const Header = () => {
   };
 
   const handleShow = () => setOpen(true);
+
+  const onOpenProfile = () => {
+    setShowUserInfo(true);
+    setAnchorEl(null);
+  };
 
   const onClickLogout = () => {
     if (window.confirm('Ви дійсно бажаєте вийти з аккаунта?')) {
@@ -106,7 +113,7 @@ const Header = () => {
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
-                  onClick={handleMenu}
+                  onClick={handleOpenMenu}
                   color="inherit"
                 >
                   <AccountCircle />
@@ -124,9 +131,9 @@ const Header = () => {
                     horizontal: 'right',
                   }}
                   open={Boolean(anchorEl)}
-                  onClose={handleClose}
+                  onClose={handleCloseMenu}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={onOpenProfile}>Профіль</MenuItem>
                   <MenuItem onClick={onClickLogout}>Вийти</MenuItem>
                 </Menu>
               </>
@@ -154,6 +161,7 @@ const Header = () => {
       <RentalModal open={open} setOpen={setOpen} />
       <SignIn showSignIn={showSignIn} toggleDrawer={toggleDrawer} />
       <SignUp showSignUp={showSignUp} toggleDrawer={toggleDrawer} />
+      <UserInfo open={showUserInfo} setOpen={setShowUserInfo} />
       {showAlert && signIn && <AlertModl />}
     </>
   );
@@ -164,7 +172,7 @@ export default Header;
 const AlertModl = () => {
   return (
     <>
-      <Alert className={styles.alert} severity="success">
+      <Alert className={styles.alert} variant="filled" severity="success">
         Авторизація пройшла успішно
       </Alert>
     </>

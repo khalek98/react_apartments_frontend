@@ -44,6 +44,7 @@ const SignIn = ({ showSignIn, toggleDrawer }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    clearErrors,
   } = useForm();
 
   const onSubmit = (e) => async (value) => {
@@ -61,8 +62,8 @@ const SignIn = ({ showSignIn, toggleDrawer }) => {
         throw new Error('Невірний логін або пароль');
       }
 
-      reset({ email: '', password: '' });
       toggleDrawer('signIn', false)(e);
+      reset({ email: '', password: '' });
     } catch (err) {
       setErrorAuth(true);
       console.log(err);
@@ -77,22 +78,21 @@ const SignIn = ({ showSignIn, toggleDrawer }) => {
     if (errorAuth) setErrorAuth(false);
   };
 
-  // useEffect(() => {
-  //   if (isSubmitSuccessful) {
-  //     reset({ email: '', password: '' });
-  //   }
-  // }, [isSubmitSuccessful, reset]);
+  const toggleAndClearErrors = (trigger, open) => (e) => {
+    toggleDrawer(trigger, open)(e);
+    clearErrors();
+  };
 
   return (
     <>
       <Drawer
         anchor="right"
         open={showSignIn}
-        onClose={toggleDrawer('signIn', false)}
+        onClose={toggleAndClearErrors('signIn', false)}
       >
         <IconButton
           aria-label="close"
-          onClick={toggleDrawer('signIn', false)}
+          onClick={toggleAndClearErrors('signIn', false)}
           sx={{
             position: 'absolute',
             right: 8,
@@ -219,9 +219,9 @@ const SignIn = ({ showSignIn, toggleDrawer }) => {
                     href="#"
                     variant="body2"
                     onClick={(e) => {
-                      toggleDrawer('signIn', false)(e);
+                      toggleAndClearErrors('signIn', false)(e);
                       setTimeout(() => {
-                        toggleDrawer('signUp', true)(e);
+                        toggleAndClearErrors('signUp', true)(e);
                       }, 300);
                     }}
                   >

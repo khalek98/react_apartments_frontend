@@ -10,6 +10,7 @@ import {
   setActivePoint,
 } from '../../redux/Slices/apart';
 
+import { CircularProgress } from '@mui/material';
 import styles from './Map.module.scss';
 import houseImg from '../../assets/icons/house.svg';
 
@@ -29,6 +30,7 @@ const Map = ({ onSetTopApartWrap }) => {
   }, []);
 
   const libraries = useMemo(() => ['places'], []);
+  // eslint-disable-next-line
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -161,7 +163,7 @@ const Map = ({ onSetTopApartWrap }) => {
   );
 
   if (loadError) return 'Error';
-  if (!isLoaded) return 'Loading...';
+  if (!isLoaded) return <CircularProgress className={styles.progress} />;
 
   return (
     <div className={styles.map}>

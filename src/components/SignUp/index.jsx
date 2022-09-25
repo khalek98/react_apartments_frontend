@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Avatar,
@@ -38,7 +38,7 @@ const SignUp = ({ showSignUp, toggleDrawer }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
     clearErrors,
   } = useForm();
 
@@ -56,27 +56,26 @@ const SignUp = ({ showSignUp, toggleDrawer }) => {
 
     setShowPassword(false);
     toggleDrawer('signUp', false)(e);
+    reset({ firstName: '', lastName: '', email: '', password: '' });
 
     dispatch(setSignIn());
   };
 
-  const toggleAndClearErrors = (e) => {
-    toggleDrawer('signUp', false)(e);
+  const toggleAndClearErrors = (trigger, open) => (e) => {
+    toggleDrawer(trigger, open)(e);
     clearErrors();
   };
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({ firstName: '', lastName: '', email: '', password: '' });
-    }
-  }, [isSubmitSuccessful, reset]);
-
   return (
     <>
-      <Drawer anchor="right" open={showSignUp} onClose={toggleAndClearErrors}>
+      <Drawer
+        anchor="right"
+        open={showSignUp}
+        onClose={(e) => toggleAndClearErrors('signUp', false)(e)}
+      >
         <IconButton
           aria-label="close"
-          onClick={toggleAndClearErrors}
+          onClick={(e) => toggleAndClearErrors('signUp', false)(e)}
           sx={{
             position: 'absolute',
             right: 8,
@@ -256,9 +255,9 @@ const SignUp = ({ showSignUp, toggleDrawer }) => {
                     href="#"
                     variant="body2"
                     onClick={(e) => {
-                      toggleDrawer('signUp', false)(e);
+                      toggleAndClearErrors('signUp', false)(e);
                       setTimeout(() => {
-                        toggleDrawer('signIn', true)(e);
+                        toggleAndClearErrors('signIn', true)(e);
                       }, 300);
                     }}
                   >

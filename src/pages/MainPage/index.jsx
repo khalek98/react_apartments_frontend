@@ -5,6 +5,7 @@ import backButton from '../../assets/icons/back-button.svg';
 import fullscreenButton from '../../assets/icons/fullscreen.svg';
 import { useRef, useState } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import SkeletonItem from '../../components/ApartBlock/SkeletonItem';
 
 const MainPage = () => {
   const { activeList, status } = useSelector((state) => state.apart);
@@ -47,7 +48,7 @@ const MainPage = () => {
             ))}
           </TransitionGroup>
         ) : (
-          <h2>У цій видимій зоні немає квартир.</h2>
+          [...Array(2)].map((_, i) => <SkeletonItem key={i} />)
         )}
       </div>
     </div>

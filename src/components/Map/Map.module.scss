@@ -40,3 +40,11 @@
 .active {
   background: #51a3e6;
 }
+
+.progress {
+  width: 60px;
+  height: 60px;
+  display: grid;
+  align-self: center;
+  justify-self: center;
+}

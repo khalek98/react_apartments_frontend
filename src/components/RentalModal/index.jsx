@@ -37,6 +37,7 @@ const RentalModal = ({ open, setOpen }) => {
     reset,
     handleSubmit,
     control,
+    clearErrors,
     formState: { errors },
   } = useForm({
     mode: 'onSubmit',
@@ -66,7 +67,11 @@ const RentalModal = ({ open, setOpen }) => {
     });
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    clearErrors();
+  };
+
   const handleChangeFile = async (e) => {
     setLoadFiles(true);
     if (e.target.files.length <= 0) return;
