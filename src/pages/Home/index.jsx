@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import SkeletonItem from '../../components/ApartBlock/SkeletonItem';
 
-const MainPage = () => {
+const Home = () => {
   const { activeList, status } = useSelector((state) => state.apart);
   const [fullscreen, setFullscreen] = useState(false);
 
@@ -55,4 +55,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default Home;

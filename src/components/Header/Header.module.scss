@@ -5,20 +5,38 @@
   justify-content: center;
 }
 
+.logo {
+  display: flex;
+  text-decoration: none;
+  align-items: center;
+  color: transparent;
+  column-gap: 5px;
+  font-size: 30px;
+  font-weight: 900;
+  background-image: linear-gradient(45deg, #f3ec78, #af4261);
+  background-size: 100%;
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  svg {
+    height: 40px;
+    width: 40px;
+    color: burlywood;
+  }
+
+  &:hover {
+    color: transparent;
+  }
+
+  @media (max-width: 475px) {
+    font-size: 0;
+  }
+}
+
 :global .MuiDrawer-paperAnchorRight {
   width: 35%;
   @media (max-width: 991px) {
     width: 100%;
-  }
-}
-
-.alert {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 99;
-  @media (max-width: 767px) {
-    top: 75px;
-    left: 5px;
   }
 }

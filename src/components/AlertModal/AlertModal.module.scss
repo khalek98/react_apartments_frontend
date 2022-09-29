@@ -1,0 +1,23 @@
+.alert {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 99;
+
+  &_ad {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 9999;
+  }
+
+  @media (max-width: 767px) {
+    top: 75px;
+    left: 5px;
+
+    &_ad {
+      bottom: 5px;
+      left: 5px;
+    }
+  }
+}

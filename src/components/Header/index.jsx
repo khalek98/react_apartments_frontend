@@ -1,28 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+import RentalModal from '../RentalModal';
+import { AlertSignIn } from '../AlertModal/';
+import SignIn from '../SignIn';
+import SignUp from '../SignUp';
+
+import { selectIsAuth, signOut } from '../../redux/Slices/auth';
+
 import {
   AppBar,
   Button,
   Container,
   Toolbar,
-  Alert,
   IconButton,
   Menu,
   MenuItem,
+  Typography,
+  Stack,
 } from '@mui/material';
-import { AccountCircle } from '@mui/icons-material';
-
-import RentalModal from '../RentalModal';
-import SignIn from '../SignIn';
-import SignUp from '../SignUp';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
+// import MenuIcon from '@mui/icons-material/Menu';
 
 import styles from './Header.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectIsAuth, signOut } from '../../redux/Slices/auth';
-import { useEffect } from 'react';
-import UserInfo from '../UserInfo/UserInfo';
+
+const iconsParams = {
+  width: { md: '35px', xs: '30px' },
+};
 
 const Header = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
 
   const isAuth = useSelector(selectIsAuth);
   const { signIn } = useSelector((state) => state.auth);
@@ -31,7 +43,6 @@ const Header = () => {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [showUserInfo, setShowUserInfo] = useState(false);
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -66,16 +77,11 @@ const Header = () => {
 
   const handleShow = () => setOpen(true);
 
-  const onOpenProfile = () => {
-    setShowUserInfo(true);
-    setAnchorEl(null);
-  };
-
   const onClickLogout = () => {
     if (window.confirm('Ви дійсно бажаєте вийти з аккаунта?')) {
       dispatch(signOut());
       window.localStorage.removeItem('token');
-      // navigate('/', { replace: true });
+      navigate('/', { replace: true });
     }
     setAnchorEl(null);
   };
@@ -91,90 +97,112 @@ const Header = () => {
     <>
       <AppBar className={styles.root} position="static">
         <Container maxWidth="xl">
-          <Toolbar sx={{ justifyContent: 'flex-end', columnGap: '10px' }}>
-            {isAuth ? (
-              <>
-                <Button
-                  color="warning"
-                  variant="contained"
-                  onClick={handleShow}
-                >
-                  Здати в оренду +
-                </Button>
-                {/* <Button
-                  onClick={onClickLogout}
-                  variant="contained"
-                  color="error"
-                >
-                  Вийти
-                </Button> */}
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorEl)}
-                  onClose={handleCloseMenu}
-                >
-                  <MenuItem onClick={onOpenProfile}>Профіль</MenuItem>
-                  <MenuItem onClick={onClickLogout}>Вийти</MenuItem>
-                </Menu>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="contained"
-                  color="info"
-                  onClick={toggleDrawer('signIn', true)}
-                >
-                  Увійти
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={toggleDrawer('signUp', true)}
-                >
-                  Реєстрація
-                </Button>
-              </>
-            )}
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Stack direction="row">
+              {/* <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+              >
+                <MenuIcon sx={{ height: '100%', ...iconsParams }} />
+              </IconButton> */}
+              <Typography
+                component={RouterLink}
+                to="/"
+                className={styles.logo}
+                variant="h6"
+                noWrap
+              >
+                <HomeWorkIcon /> Aparts
+              </Typography>
+            </Stack>
+            <Stack height={40} direction="row" spacing={1}>
+              {isAuth ? (
+                <>
+                  {!pathname.includes('/profile') && (
+                    <Button
+                      color="warning"
+                      variant="contained"
+                      onClick={handleShow}
+                    >
+                      Здати в оренду +
+                    </Button>
+                  )}
+                  <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleOpenMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle
+                      sx={{
+                        height: {
+                          xs: '30px',
+                          md: '35px',
+                        },
+                        ...iconsParams,
+                      }}
+                    />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleCloseMenu}
+                  >
+                    <RouterLink
+                      onClick={handleCloseMenu}
+                      to="/profile"
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <MenuItem>Мій профіль</MenuItem>
+                    </RouterLink>
+                    <MenuItem onClick={onClickLogout}>Вийти</MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={toggleDrawer('signIn', true)}
+                  >
+                    Увійти
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={toggleDrawer('signUp', true)}
+                  >
+                    Реєстрація
+                  </Button>
+                </>
+              )}
+            </Stack>
           </Toolbar>
         </Container>
       </AppBar>
       <RentalModal open={open} setOpen={setOpen} />
       <SignIn showSignIn={showSignIn} toggleDrawer={toggleDrawer} />
       <SignUp showSignUp={showSignUp} toggleDrawer={toggleDrawer} />
-      <UserInfo open={showUserInfo} setOpen={setShowUserInfo} />
-      {showAlert && signIn && <AlertModl />}
+
+      {showAlert && signIn && (
+        <AlertSignIn message={'Авторизація пройшла успішно'} />
+      )}
     </>
   );
 };
 
 export default Header;
-
-const AlertModl = () => {
-  return (
-    <>
-      <Alert className={styles.alert} variant="filled" severity="success">
-        Авторизація пройшла успішно
-      </Alert>
-    </>
-  );
-};

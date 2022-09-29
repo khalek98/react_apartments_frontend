@@ -14,10 +14,13 @@ export const fetchSignUp = createAsyncThunk(
   },
 );
 
-export const fetchAuthUser = createAsyncThunk('auth/fetchAuthMe', async () => {
-  const { data } = await axios.get(`/auth/user`);
-  return data;
-});
+export const fetchAuthUser = createAsyncThunk(
+  'auth/fetchAuthUser',
+  async () => {
+    const { data } = await axios.get(`/auth/user`);
+    return data;
+  },
+);
 
 export const fetchUpdateUser = createAsyncThunk(
   'auth/fetchUpdateUser',
@@ -28,7 +31,8 @@ export const fetchUpdateUser = createAsyncThunk(
 );
 
 const initialState = {
-  data: null,
+  user: null,
+  userPosts: [],
   status: 'loading',
   signIn: false,
 };
@@ -38,55 +42,63 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     signOut(state) {
-      state.data = null;
+      state.user = null;
     },
     setSignIn(state) {
       state.signIn = true;
+    },
+    addNewUserPost(state, action) {
+      state.userPosts = [...state.userPosts, action.payload];
     },
   },
   extraReducers: {
     [fetchAuth.pending]: (state) => {
       state.status = 'loading';
-      state.data = null;
+      state.user = null;
     },
     [fetchAuth.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.data = action.payload;
+      state.user = action.payload.userData;
+      state.userPosts = action.payload.userPosts;
     },
     [fetchAuth.rejected]: (state) => {
       state.status = 'error';
-      state.data = null;
+      state.user = null;
+      state.userPosts = [];
     },
     [fetchSignUp.pending]: (state) => {
       state.status = 'loading';
-      state.data = null;
+      state.user = null;
     },
     [fetchSignUp.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.data = action.payload;
+      state.user = action.payload;
     },
     [fetchSignUp.rejected]: (state) => {
       state.status = 'error';
-      state.data = null;
+      state.user = null;
     },
     [fetchAuthUser.pending]: (state) => {
       state.status = 'loading';
-      state.data = null;
+      state.user = null;
+      state.userPosts = [];
     },
     [fetchAuthUser.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.data = action.payload;
+      state.user = action.payload.userData;
+      state.userPosts = action.payload.userPosts;
     },
     [fetchAuthUser.rejected]: (state) => {
       state.status = 'error';
-      state.data = null;
+      state.user = null;
+      state.userPosts = [];
     },
     [fetchUpdateUser.pending]: (state) => {
       state.status = 'loading';
     },
     [fetchUpdateUser.fulfilled]: (state, action) => {
       state.status = 'success';
-      state.data = action.payload;
+      state.user = action.payload;
     },
     [fetchUpdateUser.rejected]: (state) => {
       state.status = 'loading';
@@ -94,7 +106,7 @@ const authSlice = createSlice({
   },
 });
 
-export const selectIsAuth = (state) => Boolean(state.auth.data);
-export const { signOut, setSignIn } = authSlice.actions;
+export const selectIsAuth = (state) => Boolean(state.auth.user);
+export const { signOut, setSignIn, addNewUserPost } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

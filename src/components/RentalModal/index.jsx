@@ -20,7 +20,6 @@ import {
   IconButton,
   FormLabel,
   FormGroup,
-  Alert,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import SendIcon from '@mui/icons-material/Send';
@@ -29,6 +28,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import Search from '../Search';
 
 import styles from './RentalModal.module.scss';
+import { AlertAd } from '../AlertModal';
+import { addNewUserPost } from '../../redux/Slices/auth';
 
 const RentalModal = ({ open, setOpen }) => {
   const dispatch = useDispatch();
@@ -106,7 +107,6 @@ const RentalModal = ({ open, setOpen }) => {
   };
 
   const submitForm = async (e) => {
-    console.log(e);
     setPostStatus('loading');
 
     try {
@@ -114,7 +114,8 @@ const RentalModal = ({ open, setOpen }) => {
         .post(`/aparts`, formDataObj)
         .then((res) => res.status === 200)
         .then(() => setPostStatus('success'))
-        .then(dispatch(addNewApart(formDataObj)));
+        .then(dispatch(addNewApart(formDataObj)))
+        .then(dispatch(addNewUserPost(formDataObj)));
     } catch (error) {
       console.error(error);
       const {
@@ -147,7 +148,7 @@ const RentalModal = ({ open, setOpen }) => {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog className={styles.modal} open={open} onClose={handleClose}>
         <form noValidate onSubmit={handleSubmit(submitForm)}>
           <DialogTitle>Заповнiть даннi</DialogTitle>
           <IconButton
@@ -267,7 +268,6 @@ const RentalModal = ({ open, setOpen }) => {
                       }}
                       value={field.value}
                       error={!!errors.price?.message}
-                      // helperText={errors?.price?.message}
                       inputMode="numeric"
                       id="outlined-adornment-amount"
                       startAdornment={
@@ -351,23 +351,16 @@ const RentalModal = ({ open, setOpen }) => {
             </Stack>
           </DialogActions>
         </form>
-
-        {/* {postStatus === 'success' && (
-          <DialogTitle>
-            Успiшно <DoneAllIcon color="success" />
-          </DialogTitle>
-        )} */}
       </Dialog>
 
       {postStatus === 'success' && (
-        <Alert className={styles.alert_ad} severity={postStatus}>
-          Об'яву успішно додано!
-        </Alert>
+        <AlertAd postStatus={postStatus} message={"Об'яву успішно додано!"} />
       )}
       {postStatus === 'error' && (
-        <Alert className={styles.alert_ad} severity={postStatus}>
-          Упс. Щось пішло не так...
-        </Alert>
+        <AlertAd
+          postStatus={postStatus}
+          message={'Упс. Щось пішло не так...'}
+        />
       )}
     </>
   );
